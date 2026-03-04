@@ -160,7 +160,12 @@
 }
 
 .dropTargetPulseSlow::after {
-  background: radial-gradient(circle at center, var(--color-mood-tokyo-8-opq) 0%, transparent 67%);
+  background: radial-gradient(
+    circle at center,
+    var(--character-primary, var(--color-mood-tokyo-8)) 0%,
+    var(--character-primary-soft, var(--color-mood-tokyo-8-opq)) 44%,
+    transparent 70%
+  );
   animation: dropTargetPulseSlow 0.667s ease-in-out infinite;
 }
 
@@ -526,16 +531,16 @@
   0%,
   100% {
     box-shadow:
-      0 0 0 var(--color-mood-tokyo-4-opq),
-      0 0 0 var(--color-mood-tokyo-8-opq),
-      inset 0 0 0 var(--color-mood-tokyo-10-opq);
+      0 0 0 var(--character-primary-soft, var(--color-mood-tokyo-8-opq)),
+      0 0 0 var(--character-primary-soft, var(--color-mood-tokyo-8-opq)),
+      inset 0 0 0 var(--character-primary-soft, var(--color-mood-tokyo-8-opq));
   }
 
   50% {
     box-shadow:
-      0 0 1rem var(--color-mood-tokyo-4),
-      0 0 2rem var(--color-mood-tokyo-8-opq),
-      inset 0 0 0.7rem var(--color-mood-tokyo-10-opq);
+      0 0 1.1rem var(--character-primary, var(--color-mood-tokyo-8)),
+      0 0 2.3rem var(--character-primary-soft, var(--color-mood-tokyo-8-opq)),
+      inset 0 0 0.8rem var(--character-primary-soft, var(--color-mood-tokyo-8-opq));
   }
 }
 

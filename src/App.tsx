@@ -5,7 +5,7 @@ import { BACKGROUND_IMAGES, CHARACTERS, type SoundOption } from './config';
 
 const VISIBLE_SOUND_COUNT = 20;
 const GLITCH_AUTO_DISABLE_KEY = 'gumi-alise-glitch-auto-disabled';
-const CHARACTER_SWITCH_OVERLAY_MS = 2350;
+const CHARACTER_SWITCH_OVERLAY_MS = 2550;
 const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 1860;
 const CHARACTER_SWITCH_SOUND_PATH = '/hanako/goat.mp3';
 
