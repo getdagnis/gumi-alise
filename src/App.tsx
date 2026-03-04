@@ -5,7 +5,8 @@ import { BACKGROUND_IMAGES, CHARACTERS, type SoundOption } from './config';
 
 const VISIBLE_SOUND_COUNT = 20;
 const GLITCH_AUTO_DISABLE_KEY = 'gumi-alise-glitch-auto-disabled';
-const CHARACTER_SWITCH_OVERLAY_MS = 2200;
+const CHARACTER_SWITCH_OVERLAY_MS = 2350;
+const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 1860;
 
 const getStoredGlitchAutoDisabled = () => {
   if (typeof window === 'undefined') {
@@ -68,6 +69,18 @@ const createGlitchOverlayVars = (): CSSProperties => {
   } as CSSProperties;
 };
 
+const preloadImage = (src: string) =>
+  new Promise<void>((resolve) => {
+    const image = new Image();
+    image.onload = () => resolve();
+    image.onerror = () => resolve();
+    image.src = src;
+
+    if (image.complete) {
+      resolve();
+    }
+  });
+
 function App() {
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [characterIndex, setCharacterIndex] = useState(0);
@@ -89,7 +102,7 @@ function App() {
   const soundById = useMemo(() => new Map(visibleSounds.map((sound) => [sound.id, sound] as const)), [visibleSounds]);
 
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
-  const characterSwitchTimeoutRef = useRef<number | null>(null);
+  const characterSwitchRunIdRef = useRef(0);
 
   const rememberGlitchDisabled = useCallback(() => {
     setAutoGlitchDisabled(true);
@@ -209,23 +222,42 @@ function App() {
 
     const nextCharacterIndex = (characterIndex + 1) % CHARACTERS.length;
     const nextCharacter = CHARACTERS[nextCharacterIndex] ?? defaultCharacter;
-
+    const runId = characterSwitchRunIdRef.current + 1;
+    characterSwitchRunIdRef.current = runId;
     setIsCharacterSwitching(true);
 
-    if (characterSwitchTimeoutRef.current) {
-      window.clearTimeout(characterSwitchTimeoutRef.current);
-    }
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        window.setTimeout(resolve, ms);
+      });
 
-    characterSwitchTimeoutRef.current = window.setTimeout(() => {
+    const startTime = performance.now();
+
+    void (async () => {
+      await Promise.all([preloadImage(nextCharacter.img), wait(CHARACTER_SWITCH_VISIBLE_SWAP_MS)]);
+      if (characterSwitchRunIdRef.current !== runId) {
+        return;
+      }
+
       stopAllAudio();
       setActiveSoundIds([]);
       setTouchDraggedSound(null);
       setIsDropActive(false);
       setVisibleSounds(getRandomSounds(nextCharacter.sounds, VISIBLE_SOUND_COUNT));
       setCharacterIndex(nextCharacterIndex);
+
+      const elapsedMs = performance.now() - startTime;
+      const remainingOverlayMs = CHARACTER_SWITCH_OVERLAY_MS - elapsedMs;
+
+      if (remainingOverlayMs > 0) {
+        await wait(remainingOverlayMs);
+        if (characterSwitchRunIdRef.current !== runId) {
+          return;
+        }
+      }
+
       setIsCharacterSwitching(false);
-      characterSwitchTimeoutRef.current = null;
-    }, CHARACTER_SWITCH_OVERLAY_MS);
+    })();
   };
 
   const dropTargetPulseClass = useMemo(() => {
@@ -305,9 +337,7 @@ function App() {
 
   useEffect(
     () => () => {
-      if (characterSwitchTimeoutRef.current) {
-        window.clearTimeout(characterSwitchTimeoutRef.current);
-      }
+      characterSwitchRunIdRef.current += 1;
     },
     [],
   );
