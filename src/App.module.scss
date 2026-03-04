@@ -1,0 +1,316 @@
+.page {
+  position: relative;
+  min-height: 100svh;
+  color: var(--color-text-main);
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: saturate(1.15) contrast(1.05);
+  transition: background-image 0.8s ease-in-out;
+}
+
+.backgroundOverlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, var(--color-overlay-top) 0%, var(--color-overlay-bottom) 100%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1rem 4.75rem;
+}
+
+.panel {
+  width: min(100%, 56rem);
+  background: var(--color-panel-bg);
+  border: 1px solid var(--color-panel-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  padding: 1rem;
+  backdrop-filter: blur(3px);
+}
+
+.titleBlock {
+  margin: 0 0 0.9rem;
+  text-align: center;
+  color: var(--color-text-strong);
+}
+
+.titleJapanese {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 10vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+}
+
+.titleRomanized {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-title);
+  font-size: clamp(1rem, 4.1vw, 2.1rem);
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+}
+
+.titleName {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 10.4vw, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+}
+
+.characterStage {
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+}
+
+.dropTarget {
+  width: min(100%, 24rem);
+  min-height: 18rem;
+  border-radius: 1.1rem;
+  border: 2px dashed var(--color-drop-border);
+  background: var(--color-drop-bg);
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  padding: 0.7rem 0.7rem 0.45rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dropTargetPulseSlow {
+  animation: dropTargetPulseSlow 0.5s ease-in-out infinite;
+}
+
+.dropTargetPulseFast {
+  animation: dropTargetPulseFast 0.375s ease-in-out infinite;
+}
+
+.dropTargetActive {
+  border-color: var(--color-drop-border-active);
+  background: var(--color-drop-bg-active);
+}
+
+.dropLabel {
+  margin: 0 0 0.25rem;
+  font-size: 0.78rem;
+  color: var(--color-drop-label);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-weight: 700;
+}
+
+.characterImageWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.characterImage {
+  width: min(100%, 20rem);
+  height: auto;
+  max-height: 53vh;
+  object-fit: contain;
+  filter: drop-shadow(var(--shadow-character));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.characterCycleButton {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.5rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 1px solid var(--color-button-border);
+  border-radius: 999px;
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-refresh);
+}
+
+.activeSummary {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-active-summary);
+}
+
+.activeTags {
+  min-height: 1.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.activeTagButton {
+  border: 1px solid var(--color-active-tag-border);
+  border-radius: 999px;
+  background: var(--color-active-tag-bg);
+  color: var(--color-active-tag-text);
+  font-size: 0.74rem;
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.soundDropdown {
+  margin-top: 0.95rem;
+  border: 1px solid var(--color-dropdown-border);
+  border-radius: var(--radius-input);
+  background: var(--color-dropdown-bg);
+  padding: 0.3rem 0.55rem 0.75rem;
+}
+
+.soundDropdown > summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--color-dropdown-summary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.soundDropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dropdownHelper {
+  margin: 0.45rem 0 0.65rem;
+  font-size: 0.8rem;
+  color: var(--color-dropdown-text);
+}
+
+.soundGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.7rem, 6.7rem));
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.soundChip {
+  border: 1px solid transparent;
+  border-radius: var(--radius-chip);
+  color: var(--color-sound-chip-text-idle);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  min-height: 2.35rem;
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.soundChip:active {
+  cursor: pointer;
+}
+
+.soundChipActive {
+  border-color: var(--color-sound-chip-border-active);
+  color: var(--color-sound-chip-text);
+  text-shadow: none;
+  box-shadow: inset 0 0 0 1px var(--color-chip-active-ring);
+}
+
+.refreshButton {
+  position: fixed;
+  right: max(0.85rem, env(safe-area-inset-right));
+  bottom: max(0.85rem, env(safe-area-inset-bottom));
+  border: 1px solid var(--color-button-border);
+  border-radius: var(--radius-button);
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-refresh);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.refreshButton:hover {
+  background: var(--color-button-hover);
+  transform: translateY(-2px);
+}
+
+@media (min-width: 40rem) {
+  .content {
+    padding: 1.4rem 1.6rem 5rem;
+  }
+
+  .panel {
+    padding: 1.2rem 1.35rem 1.35rem;
+  }
+
+  .dropTarget {
+    min-height: 20rem;
+  }
+}
+
+@media (min-width: 56rem) {
+  .panel {
+    padding: 1.35rem 2rem 1.6rem;
+  }
+}
+
+@keyframes dropTargetPulseSlow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 rgba(0, 0, 0, 0),
+      inset 0 0 0 rgba(0, 0, 0, 0);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0.7rem var(--color-mood-tokyo-4-opq),
+      0 0 1.3rem var(--color-mood-tokyo-8-opq),
+      inset 0 0 0.5rem var(--color-mood-tokyo-10-opq);
+  }
+}
+
+@keyframes dropTargetPulseFast {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 rgba(0, 0, 0, 0),
+      inset 0 0 0 rgba(0, 0, 0, 0);
+  }
+
+  25% {
+    box-shadow:
+      0 0 0.8rem var(--color-mood-tokyo-3-opq),
+      0 0 1.4rem var(--color-mood-tokyo-7-opq),
+      inset 0 0 0.6rem var(--color-mood-tokyo-1-opq);
+  }
+
+  75% {
+    box-shadow:
+      0 0 1rem var(--color-mood-tokyo-8-opq),
+      0 0 1.7rem var(--color-mood-tokyo-6-opq),
+      inset 0 0 0.65rem var(--color-mood-tokyo-11-opq);
+  }
+}

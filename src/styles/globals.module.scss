@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&family=Sawarabi+Mincho&display=swap');
+
+:global(:root) {
+  --font-title: 'Sawarabi Mincho', serif;
+  --font-body: 'Sawarabi Gothic', sans-serif;
+
+  --color-page-base: #030617;
+  --color-text-main: #faf4ff;
+  --color-text-strong: #ffffff;
+  --color-text-muted: #f0dcff;
+
+  --color-overlay-top: rgba(8, 10, 30, 0.35);
+  --color-overlay-bottom: rgba(5, 3, 28, 0.65);
+
+  --color-panel-bg: rgba(40, 13, 98, 0.63);
+  --color-panel-border: rgba(255, 255, 255, 0.34);
+
+  --color-drop-bg: rgba(55, 20, 130, 0.36);
+  --color-drop-bg-active: rgba(73, 33, 161, 0.46);
+  --color-drop-border: rgba(229, 205, 255, 0.57);
+  --color-drop-border-active: rgba(184, 255, 229, 0.92);
+  --color-drop-label: #f0dcff;
+
+  --color-active-summary: #decef8;
+  --color-active-tag-bg: rgba(31, 13, 84, 0.8);
+  --color-active-tag-border: rgba(231, 211, 255, 0.45);
+  --color-active-tag-text: #f7ecff;
+
+  --color-dropdown-bg: rgba(22, 10, 62, 0.78);
+  --color-dropdown-border: rgba(233, 215, 255, 0.38);
+  --color-dropdown-summary: #f7e8ff;
+  --color-dropdown-text: #dbc9f6;
+
+  --color-button-bg: rgba(18, 12, 61, 0.9);
+  --color-button-hover: rgba(38, 21, 108, 0.95);
+  --color-button-border: rgba(244, 223, 255, 0.42);
+  --color-button-text: #f6ebff;
+
+  --color-sound-chip-border: rgba(255, 255, 255, 0.28);
+  --color-sound-chip-text: #25194d;
+  --color-sound-chip-text-idle: #ffffff;
+  --color-sound-chip-border-active: #25194d;
+  --color-chip-active-ring: rgba(255, 255, 255, 0.95);
+
+  --color-reset-bg: #f8f0ff;
+  --color-reset-border: #dbc5ff;
+  --color-reset-text: #3f236e;
+
+  --color-mood-tokyo-1: #ff7650;
+  --color-mood-tokyo-1-opq: #ff765055;
+  --color-mood-tokyo-2: #8fcc33;
+  --color-mood-tokyo-2-opq: #8fcc3355;
+  --color-mood-tokyo-3: #fe5555;
+  --color-mood-tokyo-3-opq: #fe559955;
+  --color-mood-tokyo-4: #ffd868;
+  --color-mood-tokyo-4-opq: #ffd86855;
+  --color-mood-tokyo-5: #ffdbd4;
+  --color-mood-tokyo-5-opq: #ffdbd455;
+  --color-mood-tokyo-6: #b1eff0;
+  --color-mood-tokyo-6-opq: #b1eff055;
+  --color-mood-tokyo-7: #e62c25;
+  --color-mood-tokyo-7-opq: #e62c2555;
+  --color-mood-tokyo-8: #009f89;
+  --color-mood-tokyo-8-opq: #009f8955;
+  --color-mood-tokyo-9: #e3fdf1;
+  --color-mood-tokyo-9-opq: #e3fdf155;
+  --color-mood-tokyo-10: #ff7e5c;
+  --color-mood-tokyo-10-opq: #ff7e5c55;
+  --color-mood-tokyo-11: #f6a197;
+  --color-mood-tokyo-11-opq: #f6a19755;
+
+  --shadow-panel: 0 1rem 3rem rgba(11, 4, 46, 0.56);
+  --shadow-slot: 0 0.45rem 1.15rem rgba(9, 7, 23, 0.35);
+  --shadow-character: 0 1rem 2.2rem rgba(5, 4, 20, 0.56);
+  --shadow-refresh: 0 0.6rem 1.6rem rgba(7, 5, 24, 0.45);
+
+  --radius-panel: 1.3rem;
+  --radius-slot: 0.72rem;
+  --radius-chip: 0.68rem;
+  --radius-button: 999px;
+  --radius-input: 0.88rem;
+}
+
+:global(*) {
+  box-sizing: border-box;
+}
+
+:global(html) {
+  min-height: 100%;
+}
+
+:global(body) {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100svh;
+  background: var(--color-page-base);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  line-height: 1.4;
+}
+
+:global(#root) {
+  min-height: 100svh;
+}
+
+:global(button) {
+  font: inherit;
+}
