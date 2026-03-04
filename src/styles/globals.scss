@@ -13,6 +13,7 @@
   --color-overlay-bottom: rgba(5, 3, 28, 0.65);
 
   --color-panel-bg: rgba(40, 13, 98, 0.63);
+  --color-character-switch-overlay: rgba(40, 13, 98, 0.97);
   --color-panel-border: rgba(255, 255, 255, 0.34);
 
   --color-drop-bg: rgba(55, 20, 130, 0.36);
@@ -46,7 +47,7 @@
   --color-reset-border: #dbc5ff;
   --color-reset-text: #3f236e;
 
-  --color-mood-tokyo-1: #ff7650;
+  --color-mood-tokyo-1: #ff7650; //
   --color-mood-tokyo-1-opq: #ff765033;
   --color-mood-tokyo-2: #8fcc33;
   --color-mood-tokyo-2-opq: #8fcc3333;
@@ -66,15 +67,33 @@
   --color-mood-tokyo-9-opq: #e3fdf133;
   --color-mood-tokyo-10: #ff7e5c;
   --color-mood-tokyo-10-opq: #ff7e5c33;
-  --color-mood-tokyo-11: #f6a197;
-  --color-mood-tokyo-11-opq: #f6a19733;
+  --color-mood-tokyo-11: #ff2ad4;
+  --color-mood-tokyo-11-opq: #ff2ad433;
+  --color-mood-tokyo-12: #7b61ff;
+  --color-mood-tokyo-12-opq: #7b61ff33;
+  --color-mood-tokyo-13: #00f5ff;
+  --color-mood-tokyo-13-opq: #00f5ff33;
+  --color-mood-tokyo-14: #36ff9f;
+  --color-mood-tokyo-14-opq: #36ff9f33;
+  --color-mood-tokyo-15: #ffe600;
+  --color-mood-tokyo-15-opq: #ffe60033;
+  --color-mood-tokyo-16: #ff9f1c;
+  --color-mood-tokyo-16-opq: #ff9f1c33;
+  --color-mood-tokyo-17: #00b3ff;
+  --color-mood-tokyo-17-opq: #00b3ff33;
+  --color-mood-tokyo-18: #b8ff00;
+  --color-mood-tokyo-18-opq: #b8ff0033;
+  --color-mood-tokyo-19: #ff3d81;
+  --color-mood-tokyo-19-opq: #ff3d8133;
+  --color-mood-tokyo-20: #9d4edd;
+  --color-mood-tokyo-20-opq: #9d4edd33;
 
   --shadow-panel: 0 1rem 3rem rgba(11, 4, 46, 0.56);
   --shadow-slot: 0 0.45rem 1.15rem rgba(9, 7, 23, 0.35);
   --shadow-character: 0 1rem 2.2rem rgba(5, 4, 20, 0.56);
   --shadow-refresh: 0 0.6rem 1.6rem rgba(7, 5, 24, 0.45);
 
-  --radius-panel: 1.3rem;
+  --radius-panel: 0.5rem;
   --radius-slot: 2rem;
   --radius-chip: 0.25rem;
   --radius-button: 999px;

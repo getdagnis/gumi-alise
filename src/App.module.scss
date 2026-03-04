@@ -4,13 +4,61 @@
   color: var(--color-text-main);
 }
 
+.page::before,
+.page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 99;
+  transition: opacity 0.15s ease;
+}
+
+.pageGlitch::before {
+  opacity: 0.18;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.2) 0 1px,
+      rgba(255, 255, 255, 0.05) 1px 2px,
+      transparent 2px 7px
+    ),
+    linear-gradient(90deg, rgba(255, 42, 212, 0.1), rgba(0, 245, 255, 0.1));
+}
+
+.pageGlitch::after {
+  opacity: 0.1;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--glitch-dark-a, rgba(0, 0, 0, 0.2)) 0 var(--glitch-stripe-width, 11px),
+      var(--glitch-dark-b, rgba(0, 0, 0, 0.14)) var(--glitch-stripe-width, 11px)
+        calc(var(--glitch-stripe-width, 11px) * 2),
+      var(--glitch-light, rgba(255, 255, 255, 0.08)) calc(var(--glitch-stripe-width, 11px) * 2)
+        calc(var(--glitch-stripe-width, 11px) * 3)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 var(--glitch-thick-gap, 180px),
+      rgba(0, 0, 0, var(--glitch-thick-opacity, 0.05)) var(--glitch-thick-gap, 180px)
+        calc(var(--glitch-thick-gap, 180px) + var(--glitch-thick-width, 24px)),
+      transparent calc(var(--glitch-thick-gap, 180px) + var(--glitch-thick-width, 24px))
+        calc(var(--glitch-thick-gap, 180px) * 2)
+    );
+  background-position:
+    var(--glitch-offset-x, 0px) 0,
+    calc(var(--glitch-offset-x, 0px) / 2) 0;
+  animation: glitchPulse 0.3s ease infinite;
+}
+
 .background {
   position: fixed;
   inset: 0;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  filter: saturate(1.15) contrast(1.05);
+  filter: none;
   transition: background-image 0.8s ease-in-out;
 }
 
@@ -32,12 +80,12 @@
 
 .panel {
   width: min(100%, 56rem);
-  background: var(--color-panel-bg);
+  background: var(--color-panel-bg, var(--color-panel-bg));
   border: 1px solid var(--color-panel-border);
   border-radius: var(--radius-panel);
   box-shadow: var(--shadow-panel);
   padding: 1rem;
-  backdrop-filter: blur(3px);
+  backdrop-filter: none;
 }
 
 .titleBlock {
@@ -79,9 +127,15 @@
 .dropTarget {
   width: min(100%, 24rem);
   min-height: 18rem;
-  border-radius: 1.1rem;
-  border: 2px dashed var(--color-drop-border);
-  background: var(--color-drop-bg);
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--color-drop-border);
+  background: linear-gradient(
+    180deg,
+    var(--character-primary-soft, transparent) 0%,
+    var(--character-drop-bottom, var(--color-drop-bg)) 92%
+  );
   display: grid;
   align-content: start;
   justify-items: center;
@@ -93,27 +147,58 @@
   -webkit-user-select: none;
 }
 
+.dropTarget::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+  background: radial-gradient(circle at center, var(--color-mood-tokyo-8-opq) 0%, transparent 67%);
+  mix-blend-mode: screen;
+}
+
+.dropTargetPulseSlow::after {
+  background: radial-gradient(circle at center, var(--color-mood-tokyo-8-opq) 0%, transparent 67%);
+  animation: dropTargetPulseSlow 0.15s ease infinite;
+}
+
+.dropTargetPulseFast::after {
+  background: radial-gradient(circle at center, var(--color-mood-tokyo-3-opq) 0%, transparent 67%);
+  animation: dropTargetPulseFast 0.375s ease infinite;
+}
+
+.dropTargetPulseBoth::after {
+  background: radial-gradient(circle at center, var(--color-mood-tokyo-11-opq) 0%, transparent 67%);
+  animation: dropTargetPulseBoth 0.4375s ease infinite;
+}
+
 .dropTargetPulseSlow {
-  animation: dropTargetPulseSlow 0.5s ease-in-out infinite;
+  animation: dropTargetBeatSlow 0.65s ease-in-out infinite;
 }
 
 .dropTargetPulseFast {
-  animation: dropTargetPulseFast 0.375s ease-in-out infinite;
+  animation: dropTargetBeatFast 0.375s ease-in-out infinite;
 }
 
 .dropTargetPulseBoth {
-  animation: dropTargetPulseBoth 0.4375s ease-in-out infinite;
+  animation: dropTargetBeatBoth 0.4375s ease-in-out infinite;
 }
 
 .dropTargetActive {
-  border-color: var(--color-drop-border-active);
-  background: var(--color-drop-bg-active);
+  border-color: var(--character-primary, var(--color-drop-border-active));
+  background: linear-gradient(
+    180deg,
+    var(--character-primary-soft, transparent) 0%,
+    var(--character-drop-bottom-active, var(--color-drop-bg-active)) 72%
+  );
 }
 
 .dropLabel {
   margin: 0 0 0.25rem;
   font-size: 0.78rem;
-  color: var(--color-drop-label);
+  color: var(--character-primary, var(--color-drop-label));
   text-transform: uppercase;
   letter-spacing: 0.11em;
   font-weight: 700;
@@ -140,7 +225,7 @@
   bottom: 0.5rem;
   width: 2.1rem;
   height: 2.1rem;
-  border: 1px solid var(--color-button-border);
+  border: 1px solid var(--character-primary, var(--color-button-border));
   border-radius: 999px;
   background: var(--color-button-bg);
   color: var(--color-button-text);
@@ -165,10 +250,10 @@
 }
 
 .activeTagButton {
-  border: 1px solid var(--color-active-tag-border);
+  border: 1px solid var(--character-primary, var(--color-active-tag-border));
   border-radius: 999px;
   background: var(--color-active-tag-bg);
-  color: var(--color-active-tag-text);
+  color: var(--character-primary, var(--color-active-tag-text));
   font-size: 0.74rem;
   padding: 0.2rem 0.55rem;
   cursor: pointer;
@@ -181,7 +266,11 @@
   border: 1px solid var(--color-dropdown-border);
   border-radius: var(--radius-input);
   text-align: center;
-  background: var(--color-dropdown-bg);
+  background: linear-gradient(
+    180deg,
+    var(--character-primary-soft, transparent) 0%,
+    var(--character-primary-soft, var(--color-dropdown-bg)) 66%
+  );
   padding: 0.3rem 0.55rem 0.75rem;
 }
 
@@ -267,6 +356,69 @@
   transform: translateY(-2px);
 }
 
+.fxButton {
+  position: fixed;
+  left: max(0.85rem, env(safe-area-inset-left));
+  bottom: max(0.85rem, env(safe-area-inset-bottom));
+  border: 1px solid var(--color-button-border);
+  border-radius: var(--radius-button);
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.65rem 0.95rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-refresh);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.fxButton:hover {
+  background: var(--color-button-hover);
+  transform: translateY(-2px);
+}
+
+.characterSwitchOverlay {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 50;
+  background: var(--color-character-switch-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.characterSwitchContent {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.8rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.characterSwitchPony {
+  width: min(82vw, 8rem);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0.85rem 1.9rem rgba(0, 0, 0, 0.38));
+  animation: characterSwitchFlash 2.35s ease-in-out forwards;
+}
+
+.characterSwitchText {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  margin-top: 2rem;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--color-text-strong);
+}
+
 @media (min-width: 40rem) {
   .content {
     padding: 1.4rem 1.6rem 5rem;
@@ -287,7 +439,90 @@
   }
 }
 
+@keyframes glitchPulse {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: translateX(0);
+  }
+
+  45%,
+  55% {
+    transform: translateX(0);
+  }
+
+  50% {
+    opacity: 0.2;
+    transform: translateX(10px);
+  }
+}
+
+@keyframes characterSwitchFlash {
+  0%,
+  8%,
+  16%,
+  84%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+
+  4%,
+  12%,
+  20%,
+  50%,
+  80%,
+  88%,
+  96% {
+    opacity: 1;
+  }
+}
+
 @keyframes dropTargetPulseSlow {
+  0%,
+  100% {
+    opacity: 0.08;
+    transform: scale(0.95);
+  }
+
+  50% {
+    opacity: 0.52;
+    transform: scale(1.01);
+  }
+}
+
+@keyframes dropTargetPulseFast {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(0.94);
+  }
+
+  50% {
+    opacity: 0.66;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes dropTargetPulseBoth {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.95);
+  }
+
+  40% {
+    opacity: 0.74;
+    transform: scale(1.04);
+  }
+
+  75% {
+    opacity: 0.52;
+    transform: scale(0.985);
+  }
+}
+
+@keyframes dropTargetBeatSlow {
   0%,
   100% {
     box-shadow:
@@ -297,14 +532,13 @@
 
   50% {
     box-shadow:
-      0 0 1.4rem var(--color-mood-tokyo-4),
-      0 0 2.6rem var(--color-mood-tokyo-8),
-      0 0 3.2rem var(--color-mood-tokyo-3-opq),
-      inset 0 0 1rem var(--color-mood-tokyo-10);
+      0 0 1rem var(--color-mood-tokyo-4),
+      0 0 2rem var(--color-mood-tokyo-8-opq),
+      inset 0 0 0.7rem var(--color-mood-tokyo-10-opq);
   }
 }
 
-@keyframes dropTargetPulseFast {
+@keyframes dropTargetBeatFast {
   0%,
   100% {
     box-shadow:
@@ -314,22 +548,20 @@
 
   25% {
     box-shadow:
-      0 0 1.6rem var(--color-mood-tokyo-3),
-      0 0 2.8rem var(--color-mood-tokyo-7),
-      0 0 3.4rem var(--color-mood-tokyo-1-opq),
-      inset 0 0 1.2rem var(--color-mood-tokyo-1);
+      0 0 1.2rem var(--color-mood-tokyo-3),
+      0 0 2.1rem var(--color-mood-tokyo-7-opq),
+      inset 0 0 0.8rem var(--color-mood-tokyo-1-opq);
   }
 
   75% {
     box-shadow:
-      0 0 2rem var(--color-mood-tokyo-8),
-      0 0 3.4rem var(--color-mood-tokyo-6),
-      0 0 4rem var(--color-mood-tokyo-9-opq),
-      inset 0 0 1.3rem var(--color-mood-tokyo-11);
+      0 0 1.4rem var(--color-mood-tokyo-8),
+      0 0 2.3rem var(--color-mood-tokyo-6-opq),
+      inset 0 0 0.9rem var(--color-mood-tokyo-11-opq);
   }
 }
 
-@keyframes dropTargetPulseBoth {
+@keyframes dropTargetBeatBoth {
   0%,
   100% {
     box-shadow:
@@ -337,19 +569,25 @@
       inset 0 0 0 rgba(0, 0, 0, 0);
   }
 
-  30% {
+  35% {
     box-shadow:
-      0 0 1.8rem var(--color-mood-tokyo-4),
-      0 0 3.2rem var(--color-mood-tokyo-8),
-      0 0 4.2rem var(--color-mood-tokyo-2-opq),
-      inset 0 0 1.2rem var(--color-mood-tokyo-10);
+      0 0 1.25rem var(--color-mood-tokyo-4),
+      0 0 2.2rem var(--color-mood-tokyo-8-opq),
+      inset 0 0 0.85rem var(--color-mood-tokyo-10-opq);
   }
 
   70% {
     box-shadow:
-      0 0 2.2rem var(--color-mood-tokyo-3),
-      0 0 3.6rem var(--color-mood-tokyo-7),
-      0 0 4.4rem var(--color-mood-tokyo-9-opq),
-      inset 0 0 1.35rem var(--color-mood-tokyo-11);
+      0 0 1.55rem var(--color-mood-tokyo-3),
+      0 0 2.6rem var(--color-mood-tokyo-7-opq),
+      inset 0 0 0.95rem var(--color-mood-tokyo-11-opq);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropTargetPulseSlow::after,
+  .dropTargetPulseFast::after,
+  .dropTargetPulseBoth::after {
+    animation: none;
   }
 }

@@ -1,9 +1,35 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { DragEvent, TouchEvent } from 'react';
+import type { CSSProperties, DragEvent, TouchEvent } from 'react';
 import styles from './App.module.scss';
-import { BACKGROUND_IMAGES, CHARACTERS, SOUNDS, type SoundOption } from './config';
+import { BACKGROUND_IMAGES, CHARACTERS, type SoundOption } from './config';
 
 const VISIBLE_SOUND_COUNT = 20;
+const GLITCH_AUTO_DISABLE_KEY = 'gumi-alise-glitch-auto-disabled';
+const CHARACTER_SWITCH_OVERLAY_MS = 2200;
+
+const getStoredGlitchAutoDisabled = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  try {
+    return window.sessionStorage.getItem(GLITCH_AUTO_DISABLE_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
+const storeGlitchAutoDisabled = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.sessionStorage.setItem(GLITCH_AUTO_DISABLE_KEY, '1');
+  } catch {
+    // Ignore storage errors and keep behavior in-memory only.
+  }
+};
 
 const getRandomSounds = (sounds: SoundOption[], count: number) => {
   if (sounds.length <= count) {
@@ -20,17 +46,55 @@ const getRandomSounds = (sounds: SoundOption[], count: number) => {
   return sounds.filter((_, index) => selectedIndexes.has(index));
 };
 
+const createGlitchOverlayVars = (): CSSProperties => {
+  const stripeWidth = 7 + Math.random() * 7;
+  const darkA = 0.16 + Math.random() * 0.1;
+  const darkB = 0.11 + Math.random() * 0.09;
+  const light = 0.03 + Math.random() * 0.04;
+  const thickWidth = 16 + Math.random() * 24;
+  const thickGap = 180 + Math.random() * 150;
+  const thickOpacity = 0.07 + Math.random() * 0.08;
+  const offsetX = Math.floor(Math.random() * 42);
+
+  return {
+    '--glitch-stripe-width': `${stripeWidth.toFixed(2)}px`,
+    '--glitch-dark-a': `rgba(0, 0, 0, ${darkA.toFixed(3)})`,
+    '--glitch-dark-b': `rgba(0, 0, 0, ${darkB.toFixed(3)})`,
+    '--glitch-light': `rgba(255, 255, 255, ${light.toFixed(3)})`,
+    '--glitch-thick-width': `${thickWidth.toFixed(2)}px`,
+    '--glitch-thick-gap': `${thickGap.toFixed(2)}px`,
+    '--glitch-thick-opacity': `${thickOpacity.toFixed(3)}`,
+    '--glitch-offset-x': `${offsetX}px`,
+  } as CSSProperties;
+};
+
 function App() {
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [characterIndex, setCharacterIndex] = useState(0);
+  const [isCharacterSwitching, setIsCharacterSwitching] = useState(false);
+  const [renderMode, setRenderMode] = useState<'stable' | 'glitch'>('stable');
+  const [glitchOverlayVars, setGlitchOverlayVars] = useState<CSSProperties>(() => createGlitchOverlayVars());
+  const [autoGlitchDisabled, setAutoGlitchDisabled] = useState<boolean>(() => getStoredGlitchAutoDisabled());
   const [touchDraggedSound, setTouchDraggedSound] = useState<string | null>(null);
   const [activeSoundIds, setActiveSoundIds] = useState<string[]>([]);
   const [isDropActive, setIsDropActive] = useState(false);
-  const [visibleSounds, setVisibleSounds] = useState<SoundOption[]>(() => getRandomSounds(SOUNDS, VISIBLE_SOUND_COUNT));
+  const defaultCharacter = CHARACTERS[0];
+  const [visibleSounds, setVisibleSounds] = useState<SoundOption[]>(() =>
+    getRandomSounds(defaultCharacter.sounds, VISIBLE_SOUND_COUNT),
+  );
+
+  const activeCharacter = CHARACTERS[characterIndex] ?? defaultCharacter;
+  const characterSounds = activeCharacter.sounds;
 
   const soundById = useMemo(() => new Map(visibleSounds.map((sound) => [sound.id, sound] as const)), [visibleSounds]);
 
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
+  const characterSwitchTimeoutRef = useRef<number | null>(null);
+
+  const rememberGlitchDisabled = useCallback(() => {
+    setAutoGlitchDisabled(true);
+    storeGlitchAutoDisabled();
+  }, []);
 
   const stopAllAudio = useCallback(() => {
     Object.values(audioRefs.current).forEach((audio) => {
@@ -58,9 +122,14 @@ function App() {
         audioRefs.current[soundId] = nextAudio;
       }
 
+      if (!autoGlitchDisabled && renderMode !== 'glitch') {
+        setGlitchOverlayVars(createGlitchOverlayVars());
+        setRenderMode('glitch');
+      }
+
       setActiveSoundIds((previous) => (previous.includes(soundId) ? previous : [...previous, soundId]));
     },
-    [soundById],
+    [autoGlitchDisabled, renderMode, soundById],
   );
 
   const disableSound = useCallback((soundId: string) => {
@@ -112,7 +181,7 @@ function App() {
     }
 
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-    const isCharacterTarget = Boolean(dropTarget?.closest('[data-drop-target="gumi"]'));
+    const isCharacterTarget = Boolean(dropTarget?.closest('[data-drop-target="character"]'));
     setIsDropActive(isCharacterTarget);
   };
 
@@ -123,7 +192,7 @@ function App() {
 
     const touch = event.changedTouches[0];
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-    const isCharacterTarget = dropTarget?.closest('[data-drop-target="gumi"]');
+    const isCharacterTarget = dropTarget?.closest('[data-drop-target="character"]');
 
     if (isCharacterTarget) {
       enableSound(touchDraggedSound);
@@ -134,10 +203,30 @@ function App() {
   };
 
   const rotateCharacter = () => {
-    setCharacterIndex((previous) => (previous + 1) % CHARACTERS.length);
-  };
+    if (isCharacterSwitching) {
+      return;
+    }
 
-  const activeCharacter = CHARACTERS[characterIndex] ?? CHARACTERS[0];
+    const nextCharacterIndex = (characterIndex + 1) % CHARACTERS.length;
+    const nextCharacter = CHARACTERS[nextCharacterIndex] ?? defaultCharacter;
+
+    setIsCharacterSwitching(true);
+
+    if (characterSwitchTimeoutRef.current) {
+      window.clearTimeout(characterSwitchTimeoutRef.current);
+    }
+
+    characterSwitchTimeoutRef.current = window.setTimeout(() => {
+      stopAllAudio();
+      setActiveSoundIds([]);
+      setTouchDraggedSound(null);
+      setIsDropActive(false);
+      setVisibleSounds(getRandomSounds(nextCharacter.sounds, VISIBLE_SOUND_COUNT));
+      setCharacterIndex(nextCharacterIndex);
+      setIsCharacterSwitching(false);
+      characterSwitchTimeoutRef.current = null;
+    }, CHARACTER_SWITCH_OVERLAY_MS);
+  };
 
   const dropTargetPulseClass = useMemo(() => {
     if (activeSoundIds.length === 0) {
@@ -169,8 +258,23 @@ function App() {
     setActiveSoundIds([]);
     setTouchDraggedSound(null);
     setIsDropActive(false);
-    setVisibleSounds(getRandomSounds(SOUNDS, VISIBLE_SOUND_COUNT));
-  }, [stopAllAudio]);
+    setVisibleSounds(getRandomSounds(characterSounds, VISIBLE_SOUND_COUNT));
+    if (renderMode === 'glitch') {
+      setRenderMode('stable');
+      rememberGlitchDisabled();
+    }
+  }, [characterSounds, rememberGlitchDisabled, renderMode, stopAllAudio]);
+
+  const toggleRenderMode = useCallback(() => {
+    if (renderMode === 'glitch') {
+      setRenderMode('stable');
+      rememberGlitchDisabled();
+      return;
+    }
+
+    setGlitchOverlayVars(createGlitchOverlayVars());
+    setRenderMode('glitch');
+  }, [rememberGlitchDisabled, renderMode]);
 
   useEffect(() => {
     if (BACKGROUND_IMAGES.length < 2) {
@@ -186,13 +290,45 @@ function App() {
 
   useEffect(() => () => stopAllAudio(), [stopAllAudio]);
 
+  useEffect(() => {
+    if (!isCharacterSwitching) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isCharacterSwitching]);
+
+  useEffect(
+    () => () => {
+      if (characterSwitchTimeoutRef.current) {
+        window.clearTimeout(characterSwitchTimeoutRef.current);
+      }
+    },
+    [],
+  );
+
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${renderMode === 'glitch' ? styles.pageGlitch : ''}`} style={glitchOverlayVars}>
       <div className={styles.background} style={{ backgroundImage: `url(${BACKGROUND_IMAGES[backgroundIndex]})` }} />
       <div className={styles.backgroundOverlay} />
 
       <main className={styles.content} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-        <section className={styles.panel}>
+        <section
+          className={styles.panel}
+          style={
+            {
+              '--character-primary': activeCharacter.primaryColor,
+              '--character-primary-soft': activeCharacter.primaryColorSoft,
+              '--character-drop-bottom': activeCharacter.dropTargetBottomColor,
+              '--character-drop-bottom-active': activeCharacter.dropTargetBottomActiveColor,
+            } as CSSProperties
+          }
+        >
           <header className={styles.titleBlock}>
             <h1 className={styles.titleJapanese}>おめでとう、</h1>
             <p className={styles.titleRomanized}>(OMEDETO)</p>
@@ -202,7 +338,7 @@ function App() {
           <section className={styles.characterStage}>
             <div
               className={`${styles.dropTarget} ${isDropActive ? styles.dropTargetActive : ''} ${dropTargetPulseClass}`}
-              data-drop-target="gumi"
+              data-drop-target="character"
               onDragOver={(event) => {
                 event.preventDefault();
                 setIsDropActive(true);
@@ -210,7 +346,7 @@ function App() {
               onDragLeave={() => setIsDropActive(false)}
               onDrop={handleDrop}
             >
-              <p className={styles.dropLabel}>Gumi's Mix!</p>
+              <p className={styles.dropLabel}>{activeCharacter.mixLabel}</p>
               <div className={styles.characterImageWrap}>
                 <img
                   className={styles.characterImage}
@@ -221,6 +357,7 @@ function App() {
                   type="button"
                   className={styles.characterCycleButton}
                   onClick={rotateCharacter}
+                  disabled={isCharacterSwitching}
                   aria-label="Show next character"
                 >
                   ↻
@@ -284,7 +421,26 @@ function App() {
         >
           Reset & Change
         </button>
+
+        <button
+          type="button"
+          className={styles.fxButton}
+          onClick={toggleRenderMode}
+          aria-pressed={renderMode === 'glitch'}
+          aria-label="Toggle visual effects mode"
+        >
+          FX: {renderMode === 'glitch' ? 'Glitch' : 'Stable'}
+        </button>
       </main>
+
+      {isCharacterSwitching && (
+        <div className={styles.characterSwitchOverlay} aria-hidden="true">
+          <div className={styles.characterSwitchContent}>
+            <img className={styles.characterSwitchPony} src="/rb-storm.png" alt="" />
+            <p className={styles.characterSwitchText}>Switching character...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
