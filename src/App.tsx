@@ -249,10 +249,8 @@ function App() {
           </section>
 
           <details className={styles.soundDropdown} open>
-            <summary>Klikšķini vai uzvelc skaņas uz karaktera</summary>
-            <p className={styles.dropdownHelper}>
-              Tap to toggle sounds, or drag a sound onto Gumi to drop it into the mix.
-            </p>
+            <summary>Tap or Drag</summary>
+            <p className={styles.dropdownHelper}>Tap to turn on, tap again to turn off!</p>
             <div className={styles.soundGrid}>
               {visibleSounds.map((sound) => {
                 const isActive = activeSoundIds.includes(sound.id);
