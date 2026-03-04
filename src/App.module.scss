@@ -86,7 +86,9 @@
   align-content: start;
   justify-items: center;
   padding: 0.7rem 0.7rem 0.45rem;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
   user-select: none;
   -webkit-user-select: none;
 }
@@ -209,7 +211,7 @@
   border: 1px solid transparent;
   border-radius: var(--radius-chip);
   color: var(--color-sound-chip-text-idle);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
   min-height: 2.35rem;
   font-family: var(--font-body);
   font-size: 0.83rem;
@@ -219,7 +221,10 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .soundChip:active {
@@ -229,7 +234,6 @@
 .soundChipActive {
   border-color: var(--color-sound-chip-border-active);
   color: var(--color-sound-chip-text);
-  text-shadow: none;
   box-shadow: inset 0 0 0 1px var(--color-chip-active-ring);
 }
 
@@ -248,7 +252,9 @@
   padding: 0.7rem 1rem;
   cursor: pointer;
   box-shadow: var(--shadow-refresh);
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .refreshButton:hover {

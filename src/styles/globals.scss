@@ -37,8 +37,8 @@
   --color-button-text: #f6ebff;
 
   --color-sound-chip-border: rgba(255, 255, 255, 0.28);
-  --color-sound-chip-text: #25194d;
-  --color-sound-chip-text-idle: #ffffff;
+  --color-sound-chip-text: white;
+  --color-sound-chip-text-idle: #ffffff99;
   --color-sound-chip-border-active: #25194d;
   --color-chip-active-ring: rgba(255, 255, 255, 0.95);
 
@@ -75,8 +75,8 @@
   --shadow-refresh: 0 0.6rem 1.6rem rgba(7, 5, 24, 0.45);
 
   --radius-panel: 1.3rem;
-  --radius-slot: 0.72rem;
-  --radius-chip: 0.68rem;
+  --radius-slot: 2rem;
+  --radius-chip: 0.25rem;
   --radius-button: 999px;
   --radius-input: 0.88rem;
 }

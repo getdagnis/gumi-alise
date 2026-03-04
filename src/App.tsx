@@ -3,7 +3,7 @@ import type { DragEvent, TouchEvent } from 'react';
 import styles from './App.module.scss';
 import { BACKGROUND_IMAGES, CHARACTERS, SOUNDS, type SoundOption } from './config';
 
-const VISIBLE_SOUND_COUNT = 24;
+const VISIBLE_SOUND_COUNT = 20;
 
 const getRandomSounds = (sounds: SoundOption[], count: number) => {
   if (sounds.length <= count) {
@@ -268,7 +268,7 @@ function App() {
           onClick={resetBoard}
           aria-label="Reset all active sounds"
         >
-          Reset Sounds
+          Reset & Change
         </button>
       </main>
     </div>
