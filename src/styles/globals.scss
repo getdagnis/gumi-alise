@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&family=Sawarabi+Mincho&display=swap');
 
-:global(:root) {
+:root {
   --font-title: 'Sawarabi Mincho', serif;
   --font-body: 'Sawarabi Gothic', sans-serif;
 
@@ -81,15 +81,15 @@
   --radius-input: 0.88rem;
 }
 
-:global(*) {
+* {
   box-sizing: border-box;
 }
 
-:global(html) {
+html {
   min-height: 100%;
 }
 
-:global(body) {
+body {
   margin: 0;
   min-width: 320px;
   min-height: 100svh;
@@ -99,10 +99,10 @@
   line-height: 1.4;
 }
 
-:global(#root) {
+#root {
   min-height: 100svh;
 }
 
-:global(button) {
+button {
   font: inherit;
 }
