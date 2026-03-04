@@ -3,7 +3,7 @@ import type { DragEvent, TouchEvent } from 'react';
 import styles from './App.module.scss';
 import { BACKGROUND_IMAGES, CHARACTERS, SOUNDS, type SoundOption } from './config';
 
-const VISIBLE_SOUND_COUNT = 15;
+const VISIBLE_SOUND_COUNT = 24;
 
 const getRandomSounds = (sounds: SoundOption[], count: number) => {
   if (sounds.length <= count) {
@@ -26,9 +26,7 @@ function App() {
   const [touchDraggedSound, setTouchDraggedSound] = useState<string | null>(null);
   const [activeSoundIds, setActiveSoundIds] = useState<string[]>([]);
   const [isDropActive, setIsDropActive] = useState(false);
-  const [visibleSounds, setVisibleSounds] = useState<SoundOption[]>(() =>
-    getRandomSounds(SOUNDS, VISIBLE_SOUND_COUNT),
-  );
+  const [visibleSounds, setVisibleSounds] = useState<SoundOption[]>(() => getRandomSounds(SOUNDS, VISIBLE_SOUND_COUNT));
 
   const soundById = useMemo(() => new Map(visibleSounds.map((sound) => [sound.id, sound] as const)), [visibleSounds]);
 
@@ -196,7 +194,7 @@ function App() {
               onDragLeave={() => setIsDropActive(false)}
               onDrop={handleDrop}
             >
-              <p className={styles.dropLabel}>Build Alise&apos;s Dream Mix Here</p>
+              <p className={styles.dropLabel}>Gumi's Mix!</p>
               <div className={styles.characterImageWrap}>
                 <img
                   className={styles.characterImage}
@@ -216,7 +214,7 @@ function App() {
 
             <p className={styles.activeSummary}>
               {activeSoundIds.length === 0
-                ? 'No active sounds yet.'
+                ? 'No active sounds'
                 : `${activeSoundIds.length} active sound${activeSoundIds.length > 1 ? 's' : ''}`}
             </p>
             <div className={styles.activeTags}>
@@ -235,7 +233,7 @@ function App() {
           </section>
 
           <details className={styles.soundDropdown} open>
-            <summary>Sound Dropdown</summary>
+            <summary>Klikšķini vai uzvelc skaņas uz karaktera</summary>
             <p className={styles.dropdownHelper}>
               Tap to toggle sounds, or drag a sound onto Gumi to drop it into the mix.
             </p>
