@@ -144,8 +144,24 @@ function App() {
       return '';
     }
 
-    const hasFastAnimation = activeSoundIds.some((soundId) => soundById.get(soundId)?.animation === 'fast');
-    return hasFastAnimation ? styles.dropTargetPulseFast : styles.dropTargetPulseSlow;
+    const hasFastAnimation = activeSoundIds.some((soundId) => {
+      const animation = soundById.get(soundId)?.animation;
+      return animation === 'fast' || animation === 'both';
+    });
+    const hasSlowAnimation = activeSoundIds.some((soundId) => {
+      const animation = soundById.get(soundId)?.animation;
+      return animation === 'slow' || animation === 'both';
+    });
+
+    if (hasFastAnimation && hasSlowAnimation) {
+      return styles.dropTargetPulseBoth;
+    }
+
+    if (hasFastAnimation) {
+      return styles.dropTargetPulseFast;
+    }
+
+    return styles.dropTargetPulseSlow;
   }, [activeSoundIds, soundById]);
 
   const resetBoard = useCallback(() => {

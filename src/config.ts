@@ -1,4 +1,4 @@
-export type SoundAnimation = 'slow' | 'fast';
+export type SoundAnimation = 'slow' | 'fast' | 'both';
 
 export type SoundOption = {
   id: string;
@@ -37,7 +37,7 @@ const SOUND_COLOR_TOKENS = [
 const BASE_SOUNDS: Omit<SoundOption, 'colorToken'>[] = [
   { id: 'ok', name: 'Ok', path: '/sounds/ok.mp3', animation: 'slow' },
   { id: 'yokune', name: 'Yokune', path: '/sounds/Yokune.mp3', animation: 'slow' },
-  { id: 'energy', name: 'Energy', path: '/sounds/energy.wav', animation: 'slow' },
+  { id: 'energy', name: 'Energy', path: '/sounds/energy.wav', animation: 'fast' },
   { id: 'grow', name: 'Grow', path: '/sounds/grow.mp3', animation: 'slow' },
   { id: 'oh-boy', name: 'Oh Boy', path: '/sounds/oh-boy.mp3', animation: 'slow' },
   { id: 'peace-1', name: 'Peace Out', path: '/sounds/peace1.wav', animation: 'slow' },
