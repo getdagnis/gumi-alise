@@ -7,6 +7,7 @@ const VISIBLE_SOUND_COUNT = 20;
 const GLITCH_AUTO_DISABLE_KEY = 'gumi-alise-glitch-auto-disabled';
 const CHARACTER_SWITCH_OVERLAY_MS = 2350;
 const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 1860;
+const CHARACTER_SWITCH_SOUND_PATH = '/hanako/goat.mp3';
 
 const getStoredGlitchAutoDisabled = () => {
   if (typeof window === 'undefined') {
@@ -103,6 +104,7 @@ function App() {
 
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
   const characterSwitchRunIdRef = useRef(0);
+  const characterSwitchAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const rememberGlitchDisabled = useCallback(() => {
     setAutoGlitchDisabled(true);
@@ -116,6 +118,26 @@ function App() {
     });
     audioRefs.current = {};
   }, []);
+
+  const stopCharacterSwitchAudio = useCallback(() => {
+    const audio = characterSwitchAudioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    audio.pause();
+    audio.currentTime = 0;
+    characterSwitchAudioRef.current = null;
+  }, []);
+
+  const startCharacterSwitchAudio = useCallback(() => {
+    stopCharacterSwitchAudio();
+    const audio = new Audio(CHARACTER_SWITCH_SOUND_PATH);
+    audio.loop = true;
+    audio.volume = 0.85;
+    void audio.play().catch(() => undefined);
+    characterSwitchAudioRef.current = audio;
+  }, [stopCharacterSwitchAudio]);
 
   const enableSound = useCallback(
     (soundId: string) => {
@@ -225,6 +247,7 @@ function App() {
     const runId = characterSwitchRunIdRef.current + 1;
     characterSwitchRunIdRef.current = runId;
     setIsCharacterSwitching(true);
+    startCharacterSwitchAudio();
 
     const wait = (ms: number) =>
       new Promise<void>((resolve) => {
@@ -257,6 +280,7 @@ function App() {
       }
 
       setIsCharacterSwitching(false);
+      stopCharacterSwitchAudio();
     })();
   };
 
@@ -323,6 +347,14 @@ function App() {
   useEffect(() => () => stopAllAudio(), [stopAllAudio]);
 
   useEffect(() => {
+    if (isCharacterSwitching) {
+      return;
+    }
+
+    stopCharacterSwitchAudio();
+  }, [isCharacterSwitching, stopCharacterSwitchAudio]);
+
+  useEffect(() => {
     if (!isCharacterSwitching) {
       return;
     }
@@ -338,8 +370,9 @@ function App() {
   useEffect(
     () => () => {
       characterSwitchRunIdRef.current += 1;
+      stopCharacterSwitchAudio();
     },
-    [],
+    [stopCharacterSwitchAudio],
   );
 
   return (
@@ -459,7 +492,7 @@ function App() {
           aria-pressed={renderMode === 'glitch'}
           aria-label="Toggle visual effects mode"
         >
-          FX: {renderMode === 'glitch' ? 'Glitch' : 'Stable'}
+          Glitch: {renderMode === 'glitch' ? 'ON' : 'OFF'}
         </button>
       </main>
 
