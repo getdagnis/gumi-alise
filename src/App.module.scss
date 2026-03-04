@@ -16,7 +16,7 @@
 }
 
 .pageGlitch::before {
-  opacity: 0.18;
+  opacity: 0.015;
   background:
     repeating-linear-gradient(
       0deg,
@@ -28,7 +28,7 @@
 }
 
 .pageGlitch::after {
-  opacity: 0.1;
+  opacity: 0.015;
   background:
     repeating-linear-gradient(
       90deg,
@@ -361,19 +361,27 @@
   transform: translateY(-2px);
 }
 
-.fxButton {
+.hamburgerWrap {
   position: fixed;
-  left: max(0.85rem, env(safe-area-inset-left));
-  bottom: max(0.85rem, env(safe-area-inset-bottom));
+  right: max(0.85rem, env(safe-area-inset-right));
+  top: max(0.85rem, env(safe-area-inset-top));
+  z-index: 30;
+  width: 2.55rem;
+  height: 2.55rem;
+}
+
+.hamburgerButton {
   border: 1px solid var(--color-button-border);
-  border-radius: var(--radius-button);
+  border-radius: 0.8rem;
   background: var(--color-button-bg);
   color: var(--color-button-text);
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 0.65rem 0.95rem;
+  min-width: 2.55rem;
+  min-height: 2.55rem;
+  padding: 0.35rem;
   cursor: pointer;
   box-shadow: var(--shadow-refresh);
   transition:
@@ -381,9 +389,38 @@
     transform 0.2s ease;
 }
 
-.fxButton:hover {
+.hamburgerButton:hover {
   background: var(--color-button-hover);
   transform: translateY(-2px);
+}
+
+.hamburgerMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.45rem);
+  min-width: 10.4rem;
+  border: 1px solid var(--color-dropdown-border);
+  border-radius: 0.8rem;
+  background: var(--color-dropdown-bg);
+  box-shadow: var(--shadow-panel);
+  padding: 0.35rem;
+}
+
+.hamburgerItem {
+  width: 100%;
+  border: 1px solid var(--color-button-border);
+  border-radius: 0.6rem;
+  background: transparent;
+  color: var(--color-text-strong);
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+}
+
+.hamburgerItem:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .characterSwitchOverlay {
@@ -458,7 +495,7 @@
 
   50% {
     opacity: 0.2;
-    transform: translateX(10px);
+    transform: translateX(15px);
   }
 }
 

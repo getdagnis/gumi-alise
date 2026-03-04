@@ -4,32 +4,21 @@ import styles from './App.module.scss';
 import { BACKGROUND_IMAGES, CHARACTERS, type SoundOption } from './config';
 
 const VISIBLE_SOUND_COUNT = 20;
-const GLITCH_AUTO_DISABLE_KEY = 'gumi-alise-glitch-auto-disabled';
+const GLITCH_PREF_KEY = 'gumi-alise-glitch-mode';
 const CHARACTER_SWITCH_OVERLAY_MS = 2550;
 const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 1860;
 const CHARACTER_SWITCH_SOUND_PATH = '/hanako/goat.mp3';
 
-const getStoredGlitchAutoDisabled = () => {
+const getStoredGlitchMode = (): 'stable' | 'glitch' => {
   if (typeof window === 'undefined') {
-    return false;
+    return 'glitch';
   }
 
   try {
-    return window.sessionStorage.getItem(GLITCH_AUTO_DISABLE_KEY) === '1';
+    const stored = window.localStorage.getItem(GLITCH_PREF_KEY);
+    return stored === 'stable' ? 'stable' : 'glitch';
   } catch {
-    return false;
-  }
-};
-
-const storeGlitchAutoDisabled = () => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    window.sessionStorage.setItem(GLITCH_AUTO_DISABLE_KEY, '1');
-  } catch {
-    // Ignore storage errors and keep behavior in-memory only.
+    return 'glitch';
   }
 };
 
@@ -86,9 +75,9 @@ function App() {
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [characterIndex, setCharacterIndex] = useState(0);
   const [isCharacterSwitching, setIsCharacterSwitching] = useState(false);
-  const [renderMode, setRenderMode] = useState<'stable' | 'glitch'>('stable');
+  const [renderMode, setRenderMode] = useState<'stable' | 'glitch'>(() => getStoredGlitchMode());
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [glitchOverlayVars, setGlitchOverlayVars] = useState<CSSProperties>(() => createGlitchOverlayVars());
-  const [autoGlitchDisabled, setAutoGlitchDisabled] = useState<boolean>(() => getStoredGlitchAutoDisabled());
   const [touchDraggedSound, setTouchDraggedSound] = useState<string | null>(null);
   const [activeSoundIds, setActiveSoundIds] = useState<string[]>([]);
   const [isDropActive, setIsDropActive] = useState(false);
@@ -105,11 +94,6 @@ function App() {
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
   const characterSwitchRunIdRef = useRef(0);
   const characterSwitchAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  const rememberGlitchDisabled = useCallback(() => {
-    setAutoGlitchDisabled(true);
-    storeGlitchAutoDisabled();
-  }, []);
 
   const stopAllAudio = useCallback(() => {
     Object.values(audioRefs.current).forEach((audio) => {
@@ -157,14 +141,9 @@ function App() {
         audioRefs.current[soundId] = nextAudio;
       }
 
-      if (!autoGlitchDisabled && renderMode !== 'glitch') {
-        setGlitchOverlayVars(createGlitchOverlayVars());
-        setRenderMode('glitch');
-      }
-
       setActiveSoundIds((previous) => (previous.includes(soundId) ? previous : [...previous, soundId]));
     },
-    [autoGlitchDisabled, renderMode, soundById],
+    [soundById],
   );
 
   const disableSound = useCallback((soundId: string) => {
@@ -315,22 +294,17 @@ function App() {
     setTouchDraggedSound(null);
     setIsDropActive(false);
     setVisibleSounds(getRandomSounds(characterSounds, VISIBLE_SOUND_COUNT));
-    if (renderMode === 'glitch') {
-      setRenderMode('stable');
-      rememberGlitchDisabled();
-    }
-  }, [characterSounds, rememberGlitchDisabled, renderMode, stopAllAudio]);
+  }, [characterSounds, stopAllAudio]);
 
   const toggleRenderMode = useCallback(() => {
     if (renderMode === 'glitch') {
       setRenderMode('stable');
-      rememberGlitchDisabled();
       return;
     }
 
     setGlitchOverlayVars(createGlitchOverlayVars());
     setRenderMode('glitch');
-  }, [rememberGlitchDisabled, renderMode]);
+  }, [renderMode]);
 
   useEffect(() => {
     if (BACKGROUND_IMAGES.length < 2) {
@@ -374,6 +348,19 @@ function App() {
     },
     [stopCharacterSwitchAudio],
   );
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(GLITCH_PREF_KEY, renderMode);
+    } catch {
+      // Ignore localStorage failures and keep current runtime mode.
+    }
+  }, [renderMode]);
+
+  const handleGlitchMenuAction = () => {
+    toggleRenderMode();
+    setIsMenuOpen(false);
+  };
 
   return (
     <div className={`${styles.page} ${renderMode === 'glitch' ? styles.pageGlitch : ''}`} style={glitchOverlayVars}>
@@ -485,15 +472,30 @@ function App() {
           Reset & Change
         </button>
 
-        <button
-          type="button"
-          className={styles.fxButton}
-          onClick={toggleRenderMode}
-          aria-pressed={renderMode === 'glitch'}
-          aria-label="Toggle visual effects mode"
-        >
-          Glitch: {renderMode === 'glitch' ? 'ON' : 'OFF'}
-        </button>
+        <div className={styles.hamburgerWrap}>
+          <button
+            type="button"
+            className={styles.hamburgerButton}
+            onClick={() => setIsMenuOpen((previous) => !previous)}
+            aria-expanded={isMenuOpen}
+            aria-controls="main-menu"
+            aria-label="Open menu"
+          >
+            ☰
+          </button>
+          {isMenuOpen && (
+            <div id="main-menu" className={styles.hamburgerMenu} role="menu" aria-label="Main menu">
+              <button
+                type="button"
+                className={styles.hamburgerItem}
+                onClick={handleGlitchMenuAction}
+                role="menuitem"
+              >
+                Glitch: {renderMode === 'glitch' ? 'Turn off' : 'Turn on'}
+              </button>
+            </div>
+          )}
+        </div>
       </main>
 
       {isCharacterSwitching && (
