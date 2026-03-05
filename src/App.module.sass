@@ -45,7 +45,7 @@
   display: flex
   align-items: center
   justify-content: center
-  padding: 1rem 1rem 4.75rem
+  padding: 1rem 0.85rem 4.75rem
 
 .panel
   width: min(100%, 56rem)
@@ -53,7 +53,7 @@
   border: 1px solid var(--color-panel-border)
   border-radius: var(--radius-panel)
   box-shadow: var(--shadow-panel)
-  padding: 1rem
+  padding: 0.9rem
   backdrop-filter: none
 
 .titleBlock
@@ -190,6 +190,7 @@
   max-height: 53vh
   object-fit: contain
   opacity: 0.2
+  transform-origin: center
   pointer-events: none
   filter: drop-shadow(var(--shadow-character))
   animation: characterPlaceholderPulse 2.6s ease-in-out infinite
@@ -238,7 +239,7 @@
   border-radius: var(--radius-input)
   text-align: center
   background: var(--character-soundboard, var(--color-dropdown-bg))
-  padding: 0.3rem 0.55rem 0.75rem
+  padding: 0.3rem 0.45rem 0.75rem
 
 .soundDropdown > summary
   list-style: none
@@ -259,7 +260,7 @@
 
 .soundGrid
   display: grid
-  grid-template-columns: repeat(auto-fill, minmax(6.7rem, 6.7rem))
+  grid-template-columns: repeat(auto-fill, minmax(6.1rem, 6.1rem))
   justify-content: center
   gap: 0.45rem
 
@@ -445,10 +446,10 @@
 @keyframes characterPlaceholderPulse
   0%,
   100%
-    opacity: 0.16
+    transform: scale(0.985)
 
   50%
-    opacity: 0.24
+    transform: scale(1.015)
 
 @keyframes dropTargetPulseSlow
   0%,
@@ -505,11 +506,12 @@
 
 @keyframes dropTargetBeatBoth
   0%,
+  50%,
   100%
     box-shadow: 0 0 0 var(--color-mood-tokyo-4-opq), 0 0 0 var(--color-mood-tokyo-8-opq), inset 0 0 0 var(--color-mood-tokyo-10-opq)
 
-  35%
-    box-shadow: 0 0 1.25rem var(--color-mood-tokyo-4), 0 0 2.2rem var(--color-mood-tokyo-8-opq), inset 0 0 0.85rem var(--color-mood-tokyo-10-opq)
+  25%, 55%
+    box-shadow: 0 0 1rem #d0f1f4e8, 0 0 2.2rem var(--color-mood-tokyo-8-opq), inset 0 0 0.85rem var(--color-mood-tokyo-10-opq)
 
   70%
     box-shadow: 0 0 1.55rem var(--color-mood-tokyo-3), 0 0 2.6rem var(--color-mood-tokyo-7-opq), inset 0 0 0.95rem var(--color-mood-tokyo-11-opq)
