@@ -9,6 +9,7 @@ const DEFAULT_GLITCH_MODE: 'stable' | 'glitch' = 'stable';
 const CHARACTER_SWITCH_OVERLAY_MS = 2600;
 const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 2000;
 const CHARACTER_SWITCH_SOUND_PATH = '/hanako/goat.mp3';
+const CHARACTER_PLACEHOLDER_PATH = '/alise-1.svg';
 const BG_DESKTOP_SUFFIX = '1920';
 const BG_MOBILE_SUFFIX = 'mob';
 
@@ -101,6 +102,7 @@ function App() {
   const [touchDraggedSound, setTouchDraggedSound] = useState<string | null>(null);
   const [activeSoundIds, setActiveSoundIds] = useState<string[]>([]);
   const [isDropActive, setIsDropActive] = useState(false);
+  const [isCharacterImageLoaded, setIsCharacterImageLoaded] = useState(false);
   const defaultCharacter = CHARACTERS[0];
   const [visibleSounds, setVisibleSounds] = useState<SoundOption[]>(() =>
     getRandomSounds(defaultCharacter.sounds, VISIBLE_SOUND_COUNT),
@@ -270,6 +272,7 @@ function App() {
       setActiveSoundIds([]);
       setTouchDraggedSound(null);
       setIsDropActive(false);
+      setIsCharacterImageLoaded(false);
       setVisibleSounds(getRandomSounds(nextCharacter.sounds, VISIBLE_SOUND_COUNT));
       setCharacterIndex(nextCharacterIndex);
 
@@ -370,6 +373,7 @@ function App() {
       preloadImage('/bg1-mob.jpg'),
       preloadImage('/gumi-1.png'),
       preloadImage('/hanako-1.png'),
+      preloadImage(CHARACTER_PLACEHOLDER_PATH),
       preloadImage('/rb-storm.png'),
     ]);
   }, []);
@@ -462,11 +466,15 @@ function App() {
             >
               <p className={styles.dropLabel}>{activeCharacter.mixLabel}</p>
               <div className={styles.characterImageWrap}>
+                {!isCharacterImageLoaded && (
+                  <img className={styles.characterPlaceholder} src={CHARACTER_PLACEHOLDER_PATH} alt="" aria-hidden="true" />
+                )}
                 <img
-                  className={styles.characterImage}
+                  className={`${styles.characterImage} ${!isCharacterImageLoaded ? styles.characterImageHidden : ''}`}
                   src={activeCharacter.img}
                   alt={`${activeCharacter.name} character`}
                   onClick={resetBoard}
+                  onLoad={() => setIsCharacterImageLoaded(true)}
                 />
                 <button
                   type="button"
