@@ -2,6 +2,7 @@
   position: relative;
   min-height: 100svh;
   color: var(--color-text-main);
+  user-select: none;
 }
 
 .page::before,

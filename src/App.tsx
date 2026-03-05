@@ -1,24 +1,30 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, DragEvent, TouchEvent } from 'react';
 import styles from './App.module.scss';
-import { BACKGROUND_IMAGES, CHARACTERS, type SoundOption } from './config';
+import { BACKGROUND_IMAGE_KEYS, CHARACTERS, type SoundOption } from './config';
 
 const VISIBLE_SOUND_COUNT = 20;
 const GLITCH_PREF_KEY = 'gumi-alise-glitch-mode';
-const CHARACTER_SWITCH_OVERLAY_MS = 2550;
+const DEFAULT_GLITCH_MODE: 'stable' | 'glitch' = 'stable';
+const CHARACTER_SWITCH_OVERLAY_MS = 2650;
 const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 1860;
 const CHARACTER_SWITCH_SOUND_PATH = '/hanako/goat.mp3';
+const BG_DESKTOP_SUFFIX = '1920';
+const BG_MOBILE_SUFFIX = 'mob';
 
 const getStoredGlitchMode = (): 'stable' | 'glitch' => {
   if (typeof window === 'undefined') {
-    return 'glitch';
+    return DEFAULT_GLITCH_MODE;
   }
 
   try {
     const stored = window.localStorage.getItem(GLITCH_PREF_KEY);
-    return stored === 'stable' ? 'stable' : 'glitch';
+    if (stored === 'stable' || stored === 'glitch') {
+      return stored;
+    }
+    return DEFAULT_GLITCH_MODE;
   } catch {
-    return 'glitch';
+    return DEFAULT_GLITCH_MODE;
   }
 };
 
@@ -71,8 +77,22 @@ const preloadImage = (src: string) =>
     }
   });
 
+const buildBackgroundImagePath = (backgroundKey: string, suffix: string) => `/${backgroundKey}-${suffix}.jpg`;
+
+const getIsMobileVerticalDevice = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+  const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+  return isPortrait && hasCoarsePointer;
+};
+
 function App() {
   const [backgroundIndex, setBackgroundIndex] = useState(0);
+  const [isMobileVerticalDevice, setIsMobileVerticalDevice] = useState(() => getIsMobileVerticalDevice());
+  const [isBackgroundRotationReady, setIsBackgroundRotationReady] = useState(false);
   const [characterIndex, setCharacterIndex] = useState(0);
   const [isCharacterSwitching, setIsCharacterSwitching] = useState(false);
   const [renderMode, setRenderMode] = useState<'stable' | 'glitch'>(() => getStoredGlitchMode());
@@ -88,6 +108,11 @@ function App() {
 
   const activeCharacter = CHARACTERS[characterIndex] ?? defaultCharacter;
   const characterSounds = activeCharacter.sounds;
+  const activeBackgroundSuffix = isMobileVerticalDevice ? BG_MOBILE_SUFFIX : BG_DESKTOP_SUFFIX;
+  const activeBackgroundImage = useMemo(() => {
+    const activeBackgroundKey = BACKGROUND_IMAGE_KEYS[backgroundIndex] ?? BACKGROUND_IMAGE_KEYS[0];
+    return buildBackgroundImagePath(activeBackgroundKey, activeBackgroundSuffix);
+  }, [activeBackgroundSuffix, backgroundIndex]);
 
   const soundById = useMemo(() => new Map(visibleSounds.map((sound) => [sound.id, sound] as const)), [visibleSounds]);
 
@@ -307,15 +332,67 @@ function App() {
   }, [renderMode]);
 
   useEffect(() => {
-    if (BACKGROUND_IMAGES.length < 2) {
+    if (!isBackgroundRotationReady || BACKGROUND_IMAGE_KEYS.length < 2) {
       return;
     }
 
     const interval = window.setInterval(() => {
-      setBackgroundIndex((previous) => (previous + 1) % BACKGROUND_IMAGES.length);
+      setBackgroundIndex((previous) => (previous + 1) % BACKGROUND_IMAGE_KEYS.length);
     }, 9000);
 
     return () => window.clearInterval(interval);
+  }, [isBackgroundRotationReady]);
+
+  useEffect(() => {
+    const updateViewportType = () => {
+      setIsMobileVerticalDevice(getIsMobileVerticalDevice());
+    };
+
+    updateViewportType();
+
+    const orientationQuery = window.matchMedia('(orientation: portrait)');
+    const pointerQuery = window.matchMedia('(pointer: coarse)');
+
+    orientationQuery.addEventListener('change', updateViewportType);
+    pointerQuery.addEventListener('change', updateViewportType);
+    window.addEventListener('resize', updateViewportType);
+
+    return () => {
+      orientationQuery.removeEventListener('change', updateViewportType);
+      pointerQuery.removeEventListener('change', updateViewportType);
+      window.removeEventListener('resize', updateViewportType);
+    };
+  }, []);
+
+  useEffect(() => {
+    void Promise.all([
+      preloadImage('/bg1-1920.jpg'),
+      preloadImage('/bg1-mob.jpg'),
+      preloadImage('/gumi-1.png'),
+      preloadImage('/hanako-1.png'),
+      preloadImage('/rb-storm.png'),
+    ]);
+  }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const preloadRemainingBackgrounds = async () => {
+      const suffix = getIsMobileVerticalDevice() ? BG_MOBILE_SUFFIX : BG_DESKTOP_SUFFIX;
+      const remainingBackgrounds = BACKGROUND_IMAGE_KEYS.slice(1).map((backgroundKey) =>
+        buildBackgroundImagePath(backgroundKey, suffix),
+      );
+      await Promise.all(remainingBackgrounds.map((src) => preloadImage(src)));
+      if (!isCancelled) {
+        setIsBackgroundRotationReady(true);
+      }
+    };
+
+    void preloadRemainingBackgrounds();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   useEffect(() => () => stopAllAudio(), [stopAllAudio]);
@@ -364,7 +441,7 @@ function App() {
 
   return (
     <div className={`${styles.page} ${renderMode === 'glitch' ? styles.pageGlitch : ''}`} style={glitchOverlayVars}>
-      <div className={styles.background} style={{ backgroundImage: `url(${BACKGROUND_IMAGES[backgroundIndex]})` }} />
+      <div className={styles.background} style={{ backgroundImage: `url(${activeBackgroundImage})` }} />
       <div className={styles.backgroundOverlay} />
 
       <main className={styles.content} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
@@ -402,6 +479,7 @@ function App() {
                   className={styles.characterImage}
                   src={activeCharacter.img}
                   alt={`${activeCharacter.name} character`}
+                  onClick={resetBoard}
                 />
                 <button
                   type="button"
@@ -485,12 +563,7 @@ function App() {
           </button>
           {isMenuOpen && (
             <div id="main-menu" className={styles.hamburgerMenu} role="menu" aria-label="Main menu">
-              <button
-                type="button"
-                className={styles.hamburgerItem}
-                onClick={handleGlitchMenuAction}
-                role="menuitem"
-              >
+              <button type="button" className={styles.hamburgerItem} onClick={handleGlitchMenuAction} role="menuitem">
                 Glitch: {renderMode === 'glitch' ? 'Turn off' : 'Turn on'}
               </button>
             </div>
