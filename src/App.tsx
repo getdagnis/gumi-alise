@@ -405,19 +405,6 @@ function App() {
     stopCharacterSwitchAudio();
   }, [isCharacterSwitching, stopCharacterSwitchAudio]);
 
-  useEffect(() => {
-    if (!isCharacterSwitching) {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isCharacterSwitching]);
-
   useEffect(
     () => () => {
       characterSwitchRunIdRef.current += 1;
