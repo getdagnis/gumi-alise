@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&family=Sawarabi+Mincho&display=swap')
+
+:root
+  --font-title: 'Sawarabi Mincho', serif
+  --font-body: 'Sawarabi Gothic', sans-serif
+
+  --color-page-base: #030617
+  --color-text-main: #faf4ff
+  --color-text-strong: #ffffff
+  --color-text-muted: #f0dcff
+
+  --color-overlay-top: rgba(8, 10, 30, 0.35)
+  --color-overlay-bottom: rgba(5, 3, 28, 0.65)
+
+  --color-panel-bg: rgba(40, 13, 98, 0.63)
+  --color-character-switch-overlay: rgba(40, 13, 98, 0.97)
+  --color-panel-border: rgba(255, 255, 255, 0.34)
+
+  --color-drop-bg: rgba(55, 20, 130, 0.36)
+  --color-drop-bg-active: rgba(73, 33, 161, 0.46)
+  --color-drop-border: rgba(229, 205, 255, 0.57)
+  --color-drop-border-active: rgba(184, 255, 229, 0.92)
+  --color-drop-label: #f0dcff
+
+  --color-active-summary: #decef8
+  --color-active-tag-bg: rgba(31, 13, 84, 0.8)
+  --color-active-tag-border: rgba(231, 211, 255, 0.45)
+  --color-active-tag-text: #f7ecff
+
+  --color-dropdown-bg: rgba(22, 10, 62, 0.78)
+  --color-dropdown-border: rgba(233, 215, 255, 0.38)
+  --color-dropdown-summary: #f7e8ff
+  --color-dropdown-text: #dbc9f6
+
+  --color-button-bg: rgba(18, 12, 61, 0.9)
+  --color-button-hover: rgba(38, 21, 108, 0.95)
+  --color-button-border: rgba(244, 223, 255, 0.42)
+  --color-button-text: #f6ebff
+
+  --color-sound-chip-border: rgba(255, 255, 255, 0.28)
+  --color-sound-chip-text: white
+  --color-sound-chip-text-idle: #ffffff99
+  --color-sound-chip-border-active: #25194d
+  --color-chip-active-ring: rgba(255, 255, 255, 0.95)
+
+  --color-reset-bg: #f8f0ff
+  --color-reset-border: #dbc5ff
+  --color-reset-text: #3f236e
+
+  --color-mood-tokyo-1: #ff7650 //
+  --color-mood-tokyo-1-opq: #bd776455
+  --color-mood-tokyo-2: #8fcc55
+  --color-mood-tokyo-2-opq: #8fcc3355
+  --color-mood-tokyo-3: #fe5555
+  --color-mood-tokyo-3-opq: #fe559955
+  --color-mood-tokyo-4: #f7ca44
+  --color-mood-tokyo-4-opq: #ffd86877
+  --color-mood-tokyo-5: #e83c84
+  --color-mood-tokyo-5-opq: #e83c8455
+  --color-mood-tokyo-6: #0a8fbf
+  --color-mood-tokyo-6-opq: #0a8fbf55
+  --color-mood-tokyo-7: #e62c25
+  --color-mood-tokyo-7-opq: #e62c2555
+  --color-mood-tokyo-8: #009f89
+  --color-mood-tokyo-8-opq: #009f8955
+  --color-mood-tokyo-9: #c2e568
+  --color-mood-tokyo-9-opq: #68e5ab55
+  --color-mood-tokyo-10: #ff7e5c
+  --color-mood-tokyo-10-opq: #ff7e5c55
+  --color-mood-tokyo-11: #ff2ad4
+  --color-mood-tokyo-11-opq: #ff2ad455
+  --color-mood-tokyo-12: #7b61ff
+  --color-mood-tokyo-12-opq: #7b61ff55
+  --color-mood-tokyo-13: #00f5ff
+  --color-mood-tokyo-13-opq: #00f5ff55
+  --color-mood-tokyo-14: #36ff9f
+  --color-mood-tokyo-14-opq: #36ff9f55
+  --color-mood-tokyo-15: #ffe600
+  --color-mood-tokyo-15-opq: #ffe60055
+  --color-mood-tokyo-16: #ff9f1c
+  --color-mood-tokyo-16-opq: #ff9f1c55
+  --color-mood-tokyo-17: #00b3ff
+  --color-mood-tokyo-17-opq: #00b3ff55
+  --color-mood-tokyo-18: #b8ff00
+  --color-mood-tokyo-18-opq: #b8ff0055
+  --color-mood-tokyo-19: #ff3d81
+  --color-mood-tokyo-19-opq: #ff3d8155
+  --color-mood-tokyo-20: #9d4edd
+  --color-mood-tokyo-20-opq: #9d4edd33
+
+  --shadow-panel: 0 1rem 3rem rgba(11, 4, 46, 0.56)
+  --shadow-slot: 0 0.45rem 1.15rem rgba(9, 7, 23, 0.35)
+  --shadow-character: 0 1rem 2.2rem rgba(5, 4, 20, 0.56)
+  --shadow-refresh: 0 0.6rem 1.6rem rgba(7, 5, 24, 0.45)
+
+  --radius-panel: 0.25rem
+  --radius-slot: 0.25rem
+  --radius-chip: 0.25rem
+  --radius-button: 0.25rem
+  --radius-input: 0.88rem
+
+*
+  box-sizing: border-box
+
+html
+  min-height: 100%
+
+body
+  margin: 0
+  min-width: 320px
+  min-height: 100svh
+  background: var(--color-page-base)
+  color: var(--color-text-main)
+  font-family: var(--font-body)
+  line-height: 1.4
+
+#root
+  min-height: 100svh
+
+button
+  font: inherit
+

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, DragEvent, TouchEvent } from 'react';
-import styles from './App.module.scss';
+import styles from './App.module.sass';
 import { BACKGROUND_IMAGE_KEYS, CHARACTERS, type SoundOption } from './config';
 
 const VISIBLE_SOUND_COUNT = 20;
 const GLITCH_PREF_KEY = 'gumi-alise-glitch-mode';
 const DEFAULT_GLITCH_MODE: 'stable' | 'glitch' = 'stable';
-const CHARACTER_SWITCH_OVERLAY_MS = 2650;
-const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 1860;
+const CHARACTER_SWITCH_OVERLAY_MS = 2600;
+const CHARACTER_SWITCH_VISIBLE_SWAP_MS = 2000;
 const CHARACTER_SWITCH_SOUND_PATH = '/hanako/goat.mp3';
 const BG_DESKTOP_SUFFIX = '1920';
 const BG_MOBILE_SUFFIX = 'mob';
@@ -436,10 +436,10 @@ function App() {
           className={styles.panel}
           style={
             {
+              '--character-title': activeCharacter.titleColor,
               '--character-primary': activeCharacter.primaryColor,
-              '--character-primary-soft': activeCharacter.primaryColorSoft,
-              '--character-drop-bottom': activeCharacter.dropTargetBottomColor,
-              '--character-drop-bottom-active': activeCharacter.dropTargetBottomActiveColor,
+              '--character-secondary': activeCharacter.secondaryColor,
+              '--character-soundboard': activeCharacter.soundboardColor,
             } as CSSProperties
           }
         >

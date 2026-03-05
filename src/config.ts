@@ -15,10 +15,10 @@ export type CharacterOption = {
   name: string;
   img: string;
   mixLabel: string;
+  titleColor: string;
   primaryColor: string;
-  primaryColorSoft: string;
-  dropTargetBottomColor: string;
-  dropTargetBottomActiveColor: string;
+  secondaryColor: string;
+  soundboardColor: string;
   sounds: SoundOption[];
 };
 
@@ -149,14 +149,25 @@ export const SOUNDS = {
 
 export const CHARACTERS: CharacterOption[] = [
   {
+    id: 'alise',
+    name: 'ALISE',
+    img: '/alise-1.png',
+    mixLabel: "Alise's Mix!",
+    titleColor: 'white',
+    primaryColor: '#600b87cc',
+    secondaryColor: '#ff0040a1',
+    soundboardColor: '#29063acc',
+    sounds: SOUNDS.gumi,
+  },
+  {
     id: 'gumi',
     name: 'GUMI',
     img: '/gumi-1.png',
     mixLabel: "Gumi's Mix!",
-    primaryColor: '#6ede3e',
-    primaryColorSoft: '#234315a1',
-    dropTargetBottomColor: '#5dc630cc',
-    dropTargetBottomActiveColor: '#14562800',
+    titleColor: 'white',
+    primaryColor: '#5dc630cc',
+    secondaryColor: '#234315a1',
+    soundboardColor: '#243b0ecc',
     sounds: SOUNDS.gumi,
   },
   {
@@ -164,10 +175,10 @@ export const CHARACTERS: CharacterOption[] = [
     name: 'Hanako Kun',
     img: '/hanako-1.png',
     mixLabel: "Hanako's Mix!",
+    titleColor: 'white',
     primaryColor: '#e4003a',
-    primaryColorSoft: '#401521c0',
-    dropTargetBottomColor: '#e4003acc',
-    dropTargetBottomActiveColor: '#5a001c',
+    secondaryColor: '#990026aa',
+    soundboardColor: '#990026aa',
     sounds: SOUNDS.hanako,
   },
 ];
