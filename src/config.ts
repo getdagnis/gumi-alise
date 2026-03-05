@@ -53,30 +53,26 @@ const mapSoundColors = (baseSounds: BaseSoundOption[]): SoundOption[] =>
     colorToken: SOUND_COLOR_TOKENS[index % SOUND_COLOR_TOKENS.length],
   }));
 
+// most common used sounds first. do not reorder alphabetically.
 const GUMI_BASE_SOUNDS: BaseSoundOption[] = [
   { id: 'ok', name: 'Ok', path: '/gumi/ok.mp3', animation: 'slow' },
   { id: 'yokune', name: 'Yokune', path: '/gumi/Yokune.mp3', animation: 'slow' },
   { id: 'energy', name: 'Energy', path: '/gumi/energy.wav', animation: 'fast' },
   { id: 'fly-me', name: 'Fly Me', path: '/gumi/fly-me.wav', animation: 'slow' },
   { id: 'grow', name: 'Grow', path: '/gumi/grow.mp3', animation: 'slow' },
+  {
+    id: 'synth-rise',
+    name: 'Synth Rise',
+    path: '/gumi/synth%20rise.wav',
+    animation: 'fast',
+  },
   { id: 'kick-1', name: 'Kick It!', path: '/gumi/kick1.wav', animation: 'fast' },
   { id: 'machines', name: 'Machines', path: '/gumi/machines.wav', animation: 'slow' },
-  { id: 'noise-1', name: 'Noise', path: '/gumi/noise1.wav', animation: 'slow' },
   { id: 'oh-boy', name: 'Oh Boy', path: '/gumi/oh-boy.mp3', animation: 'slow' },
   { id: 'peace-1', name: 'Peace Out', path: '/gumi/peace1.wav', animation: 'slow' },
   { id: 'sad', name: 'Sad', path: '/gumi/sad.mp3', animation: 'slow' },
-  { id: 'alert', name: 'Alert', path: '/gumi/alert.wav', animation: 'slow' },
+  { id: 'noise-1', name: 'Noise', path: '/gumi/noise1.wav', animation: 'slow' },
   { id: 'alien', name: 'Alien', path: '/gumi/alien.wav', animation: 'slow' },
-  { id: 'anthenna', name: 'Anthenna', path: '/gumi/anthenna.wav', animation: 'fast' },
-  { id: 'busy', name: 'Busy', path: '/gumi/busy.wav', animation: 'slow' },
-  {
-    id: 'candy-machine',
-    name: 'Synth Candy',
-    path: '/gumi/candy-machine.mp3',
-    animation: 'slow',
-  },
-  { id: 'cartoon', name: 'Cartoon', path: '/gumi/cartoon.wav', animation: 'slow' },
-  { id: 'drama', name: 'Drama', path: '/gumi/drama.wav', animation: 'slow' },
   {
     id: 'synth-forest',
     name: 'Synth Forest',
@@ -89,6 +85,17 @@ const GUMI_BASE_SOUNDS: BaseSoundOption[] = [
     path: '/gumi/synth%20garden.wav',
     animation: 'fast',
   },
+  { id: 'tomorrow', name: 'Tomorrow', path: '/gumi/tomorrow.wav', animation: 'slow' },
+  { id: 'anthenna', name: 'Anthenna', path: '/gumi/anthenna.wav', animation: 'fast' },
+  { id: 'busy', name: 'Busy', path: '/gumi/busy.wav', animation: 'slow' },
+  {
+    id: 'candy-machine',
+    name: 'Synth Candy',
+    path: '/gumi/candy-machine.mp3',
+    animation: 'slow',
+  },
+  { id: 'cartoon', name: 'Cartoon', path: '/gumi/cartoon.wav', animation: 'slow' },
+  { id: 'drama', name: 'Drama', path: '/gumi/drama.wav', animation: 'slow' },
   {
     id: 'synth-grow',
     name: 'Synth Grow',
@@ -102,18 +109,12 @@ const GUMI_BASE_SOUNDS: BaseSoundOption[] = [
     animation: 'fast',
   },
   {
-    id: 'synth-rise',
-    name: 'Synth Rise',
-    path: '/gumi/synth%20rise.wav',
-    animation: 'fast',
-  },
-  {
     id: 'synth-space',
     name: 'Synth Space',
     path: '/gumi/synth%20space.wav',
     animation: 'fast',
   },
-  { id: 'tomorrow', name: 'Tomorrow', path: '/gumi/tomorrow.wav', animation: 'slow' },
+  { id: 'alert', name: 'Alert', path: '/gumi/alert.wav', animation: 'slow' },
 ];
 
 const HANAKO_BASE_SOUNDS: BaseSoundOption[] = [
